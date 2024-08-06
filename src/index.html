@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KFSMS - Klar för SMS</title>
+	<link type="image/png" sizes="96x96" rel="icon" href="icons8-message-96.png">
+    <style>
+      @font-face {
+        font-family: "Elkjop Headline";
+        src: url("Elkjop.ttf") format("truetype");
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: "Elkjop Headline", Arial, sans-serif;
+        background-color: #151b4e;
+        margin: 0;
+      }
+      .button {
+        position: relative;
+        font-size: 38px;
+        padding: 30px;
+        margin: 10px;
+        width: 435px;
+        cursor: pointer;
+        background-color: #85b934;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-family: "Elkjop Headline", Arial, sans-serif;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        text-align: center;
+      }
+      .button:hover {
+        background-color: #00723e;
+      }
+      .button.flash {
+        background-color: #004c2a !important;
+      }
+      .input-box {
+        font-size: 40px;
+        padding: 15px;
+        margin: 20px;
+        width: 400px;
+        font-family: "Elkjop Headline", Arial, sans-serif;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+      }
+      #confirmation {
+        font-size: 50px;
+        color: white;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 1s ease-out;
+      }
+      .tooltip {
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        margin-left: 10px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        z-index: 1;
+        display: none;
+        width: 400px; /* Set the desired width */
+        max-width: none; /* Ensure there's no max-width limiting it */
+      }
+    </style>
+  </head>
+  <body>
+    <input
+      class="input-box"
+      type="text"
+      id="numberInput"
+      placeholder="Enter Ticket Number"
+    />
+    <button
+      class="button"
+      onmouseover="showTooltip(this, 'SNABB_SMS_ALLT_KLART')"
+      onmouseout="hideTooltip(this)"
+      onclick="copyMessage('SNABB_SMS_ALLT_KLART')"
+    >
+      ALLT KLART
+      <div class="tooltip" id="tooltip_SNABB_SMS_ALLT_KLART"></div>
+    </button>
+    <button
+      class="button"
+      onmouseover="showTooltip(this, 'SMS_KLAR_OFFICE')"
+      onmouseout="hideTooltip(this)"
+      onclick="copyMessage('SMS_KLAR_OFFICE')"
+    >
+      INSTALLERA MED KUND
+      <div class="tooltip" id="tooltip_SMS_KLAR_OFFICE"></div>
+    </button>
+    <button
+      class="button"
+      onmouseover="showTooltip(this, 'KLAR_TV')"
+      onmouseout="hideTooltip(this)"
+      onclick="copyMessage('KLAR_TV')"
+    >
+      TV
+      <div class="tooltip" id="tooltip_KLAR_TV"></div>
+    </button>
+    <button
+      class="button"
+      onmouseover="showTooltip(this, 'SHIP2STORE')"
+      onmouseout="hideTooltip(this)"
+      onclick="copyMessage('SHIP2STORE')"
+    >
+      SHIP2STORE
+      <div class="tooltip" id="tooltip_SHIP2STORE"></div>
+    </button>
+    <button
+      class="button"
+      onmouseover="showTooltip(this, 'TRANSFER')"
+      onmouseout="hideTooltip(this)"
+      onclick="copyMessage('TRANSFER')"
+    >
+      ÖVERFÖRING
+      <div class="tooltip" id="tooltip_TRANSFER"></div>
+    </button>
+
+    <div id="confirmation">Kopierat!</div>
+
+    <script>
+      function showTooltip(button, template) {
+        var number = document.getElementById("numberInput").value;
+        var message = getMessage(template, number);
+        var tooltip = button.querySelector(".tooltip");
+        tooltip.textContent = message;
+        tooltip.style.display = "block";
+      }
+
+      function hideTooltip(button) {
+        var tooltip = button.querySelector(".tooltip");
+        tooltip.style.display = "none";
+      }
+
+      function getMessage(template, number) {
+        switch (template) {
+          case "SNABB_SMS_ALLT_KLART":
+            return "Hej! Din dator är färdiginstallerad och finns redo att hämta i varuutlämningen. Vänligen ta med giltig legitimation. Mvh Elgiganten Barkarby";
+          case "SMS_KLAR_OFFICE":
+            return `Hej! Vi har nu installerat din dator så långt vi kan utan dig. Vi behöver avsluta installationen tillsammans. Det tar cirka 15 minuter. Ta en nummerlapp på Teknisk Support och uppge ${number}. Mvh Elgiganten Barkarby`;
+          case "KLAR_TV":
+            return "Hej! Din TV är nu färdigkalibrerad och finns att hämta i varuutlämningen mot uppvisande av inköpskvitto. Mvh Elgiganten Barkarby";
+          case "SHIP2STORE":
+            return `Hej! Din produkt har nu anlänt till butiken och är redo att installation. Ta en nummerlapp på Teknisk Support och uppge ${number}. Mvh Elgiganten Barkarby`;
+          case "TRANSFER":
+            return `Hej! Din mobil är nu färdiginstallerad och finns att hämta i varuutlämningen mot uppvisande av inköpskvitto. Mvh Elgiganten Barkarby`;
+          // Add more cases for different messages
+          default:
+            return "";
+        }
+      }
+
+      function copyMessage(template) {
+        var number = document.getElementById("numberInput").value;
+        var message = getMessage(template, number);
+
+        navigator.clipboard.writeText(message).then(
+          function () {
+            var confirmation = document.getElementById("confirmation");
+            confirmation.style.opacity = 1;
+            setTimeout(function () {
+              confirmation.style.opacity = 0;
+            }, 2000);
+
+            // Flash button effect using class
+            var button = document.querySelector(
+              `button[onclick="copyMessage('${template}')"]`
+            );
+            button.classList.add("flash");
+            setTimeout(function () {
+              button.classList.remove("flash");
+            }, 300);
+
+            // Clear the input field and refocus
+            var numberInput = document.getElementById("numberInput");
+            numberInput.value = "";
+            numberInput.focus();
+          },
+          function (err) {
+            console.error("Could not copy text: ", err);
+          }
+        );
+      }
+    </script>
+  </body>
+</html>
